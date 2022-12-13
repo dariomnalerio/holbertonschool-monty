@@ -17,12 +17,13 @@ int main(int argc, char *argv[])
 		exit(EXIT_FAILURE);
 	}
 	else
-		content = handle_command(argv[1]);
+		content = read_file(argv[1]);
 	cont_aux = strdup(content);
 	free(content);
-	/* Implement tokenisation functionality*/
+	token = strtok(cont_aux, "\n");
+	/* cont_aux not freed */
+	get_function(token);
 }
-
 /**
  * read_file - Reads file
  * @argv: Argument
@@ -48,4 +49,30 @@ char *read_file(char *argv)
 	}
 	close(fd);
 	return (buf);
+}
+
+/**
+* get_function - Selects correct function
+* @name: String corresponding to intended function
+* Return: Call to function if found, EXIT_FAILURE otherwise
+*/
+
+void (*get_function(char *name))(stack_t **, unsigned int)
+{
+	int i;
+
+	instruction_t options[] = {
+		{"push", m_push},
+		{NULL, NULL}
+	};
+
+	for (i = 0; options[i].opcode;  i++)
+	{
+		if (strcmp(options[i].opcode, name) == 0)
+		{
+			return (options[i].f);
+		}
+	}
+		dprintf(STDERR_FILENO, "L1: unknown instruction %s\n", name);
+		exit(EXIT_FAILURE);
 }
