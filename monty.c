@@ -10,6 +10,7 @@
 int main(int argc, char *argv[])
 {
 	char *content = NULL, *cont_aux = NULL, *token = NULL;
+	unsigned int i = 1;
 
 	if (argc != 2)
 	{
@@ -18,11 +19,19 @@ int main(int argc, char *argv[])
 	}
 	else
 		content = read_file(argv[1]);
-	cont_aux = strdup(content);
+	token = strtok(content, " \n");
+	while (token)
+	{
+		if (isdigit(token[0]) != 0)
+		{
+			token = strtok(NULL, " \n");
+			continue;
+		}
+		get_function(token, content, i);
+		token = strtok(NULL, " \n");
+		i++;
+	}
 	free(content);
-	token = strtok(cont_aux, "\n");
-	/* cont_aux not freed */
-	get_function(token);
 }
 /**
  * read_file - Reads file
@@ -57,12 +66,12 @@ char *read_file(char *argv)
 * Return: Call to function if found, EXIT_FAILURE otherwise
 */
 
-void (*get_function(char *name))(stack_t **, unsigned int)
+void (*get_function(char *name, char *content))(stack_t **stack, unsigned int line_number)
 {
 	int i;
 
 	instruction_t options[] = {
-		{"push", m_push},
+		{"pint", m_pint},
 		{NULL, NULL}
 	};
 
@@ -70,9 +79,10 @@ void (*get_function(char *name))(stack_t **, unsigned int)
 	{
 		if (strcmp(options[i].opcode, name) == 0)
 		{
-			return (options[i].f);
+			return (options[i].f) // need to fix this;
 		}
 	}
 		dprintf(STDERR_FILENO, "L1: unknown instruction %s\n", name);
+		free(content);
 		exit(EXIT_FAILURE);
 }
