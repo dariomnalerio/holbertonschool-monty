@@ -45,7 +45,6 @@ extern int stack;
 void m_push(stack_t **stack, unsigned int line_number);
 int verify_digit(char *num);
 char *read_file(char *argv);
-void (*get_function(char *name, char *content))(stack_t **, unsigned int);
-void m_pint(stack_t **asd, unsigned int dsa);
-
+void m_pint(stack_t **stack, unsigned int nas);
+int get_function(char *name, char *content, stack_t **stack, unsigned int line_number);
 #endif

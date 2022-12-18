@@ -9,6 +9,7 @@
 
 int main(int argc, char *argv[])
 {
+	stack_t **stack;
 	char *content = NULL, *cont_aux = NULL, *token = NULL;
 	unsigned int i = 1;
 
@@ -22,15 +23,17 @@ int main(int argc, char *argv[])
 	token = strtok(content, " \n");
 	while (token)
 	{
+			printf("%s\n", token);
 		if (isdigit(token[0]) != 0)
 		{
 			token = strtok(NULL, " \n");
 			continue;
 		}
-		get_function(token, content, i);
+		get_function(token, content,stack, i);
 		token = strtok(NULL, " \n");
 		i++;
 	}
+	
 	free(content);
 }
 /**
@@ -66,11 +69,11 @@ char *read_file(char *argv)
 * Return: Call to function if found, EXIT_FAILURE otherwise
 */
 
-void (*get_function(char *name, char *content))(stack_t **stack, unsigned int line_number)
+int get_function(char *name, char *content, stack_t **stack, unsigned int line_number)
 {
 	int i;
-
-	instruction_t options[] = {
+	
+	char* options[] = {
 		{"pint", m_pint},
 		{NULL, NULL}
 	};
@@ -79,7 +82,8 @@ void (*get_function(char *name, char *content))(stack_t **stack, unsigned int li
 	{
 		if (strcmp(options[i].opcode, name) == 0)
 		{
-			return (options[i].f) // need to fix this;
+			 options[i].f(stack, line_number);
+				return (1);
 		}
 	}
 		dprintf(STDERR_FILENO, "L1: unknown instruction %s\n", name);
